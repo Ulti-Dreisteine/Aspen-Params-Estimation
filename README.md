@@ -1,37 +1,17 @@
 # Estimating-ASPEN-Parameters-by-the-Bayesian-Analysis
 
-#### 介绍
-通过贝叶斯分析对ASPEN模型参数进行估计
+使用贝叶斯分析估计ASPEN模型参数
 
-#### 软件架构
-软件架构说明
+# 一、使用Python调用ASPEN模型
 
+ASPEN模型保存为bkp文件;
 
-#### 安装教程
+在ASPEN的Variable Explorer中查找相应变量的调用地址Call:
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+* 进料压力：Application.Tree.FindNode("\Data\Streams\FEED\Input\PRES\MIXED")Data.Streams.FEED.Input.PRES.#0
+* 进料流量：
+  * ETHANOL: Application.Tree.FindNode("\Data\Streams\FEED\Input\FLOW\MIXED\ETHANOL")
+  * ACETIC: Application.Tree.FindNode("\Data\Streams\FEED\Input\FLOW\MIXED\ACETIC")
+  * H2O: Application.Tree.FindNode("\Data\Streams\FEED\Input\FLOW\MIXED\H2O")
+* 出料流量：
+  * ETHYL-01: Application.Tree.FindNode("\Data\Streams\PRODUCT\Stream Results\Table\  ETHYL-01 PRODUCT")
