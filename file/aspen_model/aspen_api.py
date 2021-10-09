@@ -59,7 +59,7 @@ class PyASPENPlus(object):
         for i, node in enumerate(nodes):
             self.app.Tree.FindNode(call_address[node]).Value = values[i]
 
-    def run_simulation(self, reinit: bool = True, sleep: float = 2.0):
+    def run_simulation(self, reinit: bool = True, sleep: float = 0.01):
         """进行模拟
 
         :param reinit: 是否重新初始化迭代参数设置, defaults to True
@@ -114,10 +114,10 @@ if __name__ == '__main__':
     }
 
     x_range = {
-        'FEED_pressure': [0.1000, 0.1020],
-        'FEED_ETHANOL': [200.0, 230.0],
-        'FEED_ACETIC': [210.0, 240.0],
-        'FEED_H2O': [710.0, 750.0],
+        'FEED_pressure': [0.0500, 0.1500],
+        'FEED_ETHANOL': [150.0, 240.0],
+        'FEED_ACETIC': [150.0, 240.0],
+        'FEED_H2O': [650.0, 800.0],
 
         'PRODUCT_ETHYL-01': None,
     }
@@ -143,7 +143,7 @@ if __name__ == '__main__':
     pyaspen.load_ap_file(file_name, file_dir)
 
     x_records, y_records, status_records = [], [], []
-    repeats = 10
+    repeats = 5000
     for i in range(repeats):
         print('simulating %d' % i)
 
@@ -162,6 +162,15 @@ if __name__ == '__main__':
 
     pyaspen.close_app()
 
+    # ---- 获得结果 ---------------------------------------------------------------------------------
+
+    x_records = np.array(x_records)
+    y_records = np.array(y_records)
+    status_records = np.array(status_records)
+    
+    np.save(os.path.join(BASE_DIR,'data/dataset/X.npy'), x_records)
+    np.save(os.path.join(BASE_DIR,'data/dataset/Y.npy'), y_records)
+    np.save(os.path.join(BASE_DIR,'data/dataset/status.npy'), status_records)
     
 
     
