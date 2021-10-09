@@ -65,7 +65,7 @@ if __name__ == '__main__':
 
     for i in range(D_x):
         w = 1.0 / samples.shape[0] * np.ones_like(samples[:, 0])
-        axis[i].hist(samples[:, D_y + i], bins = 40, weights = w)
+        axis[i].hist(samples[:, D_y + i], bins = 25, weights = w)
         axis[i].set_xlabel(x_cols[i])
         axis[i].set_ylabel('posterior PDF value')
     
