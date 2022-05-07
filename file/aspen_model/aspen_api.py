@@ -17,7 +17,7 @@ import time
 import sys
 import os
 
-BASE_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), '../' * 3))
+BASE_DIR = os.path.abspath(os.path.join(os.path.abspath(__file__), "../" * 3))
 sys.path.append(BASE_DIR)
 
 
@@ -27,25 +27,25 @@ class PyASPENPlus(object):
     def __init__(self):
         pass
 
-    def init_app(self, ap_version: str = '11.0'):
+    def init_app(self, ap_version: str = "11.0"):
         """开启ASPEN Plus
 
-        :param ap_version: ASPEN Plus版本号, defaults to '11.0'
+        :param ap_version: ASPEN Plus版本号, defaults to "11.0"
         """
         version_match = {
-        '11.0': '37.0',
-        '10.0': '36.0',
-        '9.0': '35.0',
-        '8.8': '34.0',
+        "11.0": "37.0",
+        "10.0": "36.0",
+        "9.0": "35.0",
+        "8.8": "34.0",
         }
-        self.app = win32.Dispatch('Apwn.Document.{}'.format(version_match[ap_version]))
+        self.app = win32.Dispatch("Apwn.Document.{}".format(version_match[ap_version]))
 
 
     def load_ap_file(self, file_name: str, file_dir: str = None, visible: bool = False, dialogs: bool = False):
         """载入待运行的ASPEN文件"""
         # 文件类型检查.
-        if file_name[-4:] != '.bkp':
-            raise ValueError('not an ASPEN bkp file')
+        if file_name[-4:] != ".bkp":
+            raise ValueError("not an ASPEN bkp file")
         
         self.file_dir = os.getcwd() if file_dir is None else file_dir  # ASPEN文件所处目录, 默认为当前目录
 
@@ -53,7 +53,7 @@ class PyASPENPlus(object):
         self.app.Visible = 1 if visible else 0
         self.app.SuppressDialogs = 0 if dialogs else 1
 
-        print('The ASPEN file "%s" has been reloaded' % file_name)
+        print("The ASPEN file \"%s\" has been reloaded" % file_name)
 
     def assign_node_values(self, nodes: list, values: list, call_address: dict):
         for i, node in enumerate(nodes):
@@ -72,20 +72,20 @@ class PyASPENPlus(object):
         while self.app.Engine.IsRunning == 1:
             time.sleep(sleep)
 
-    def get_target_values(self, target_nodes: list, call_address) -> list:
+    def get_target_values(self, target_nodes: list, call_address):
         """从模拟结果中获得目标值"""
         values = []
         for node in target_nodes:
             values.append(self.app.Tree.FindNode(call_address[node]).Value)
         return values
 
-    def check_simulation_status(self) -> list:
+    def check_simulation_status(self):
         """检查模拟是否收敛等"""
-        value = self.app.Tree.FindNode('\Data\Results Summary\Run-Status\Output\RUNID').Value
-        file_path = self.file_dir + '\\' + value + '.his'
+        value = self.app.Tree.FindNode("\Data\Results Summary\Run-Status\Output\RUNID").Value
+        file_path = self.file_dir + "\\" + value + ".his"
 
-        with open(file_path,'r') as f: 
-            isError = np.any(np.array([line.find('SEVERE ERROR') for line in f.readlines()])>=0)
+        with open(file_path,"r") as f: 
+            isError = np.any(np.array([line.find("SEVERE ERROR") for line in f.readlines()])>=0)
         return [not isError]
 
     def quit_app(self):
@@ -95,31 +95,31 @@ class PyASPENPlus(object):
         self.app.Close()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # ---- 接口和值 ---------------------------------------------------------------------------------
 
-    x_cols = ['FEED_pressure', 'FEED_ETHANOL', 'FEED_ACETIC', 'FEED_H2O']
-    y_cols = ['PRODUCT_ETHYL-01']
+    x_cols = ["FEED_pressure", "FEED_ETHANOL", "FEED_ACETIC", "FEED_H2O"]
+    y_cols = ["PRODUCT_ETHYL-01"]
 
     # 自行整理调用地址.
     # 调用地址查找方法参考：https://zhuanlan.zhihu.com/p/321125404
     call_address = {
-        'FEED_pressure': '\Data\Streams\FEED\Input\PRES\MIXED',
-        'FEED_ETHANOL': '\Data\Streams\FEED\Input\FLOW\MIXED\ETHANOL',
-        'FEED_ACETIC': '\Data\Streams\FEED\Input\FLOW\MIXED\ACETIC',
-        'FEED_H2O': '\Data\Streams\FEED\Input\FLOW\MIXED\H2O',
+        "FEED_pressure": "\Data\Streams\FEED\Input\PRES\MIXED",
+        "FEED_ETHANOL": "\Data\Streams\FEED\Input\FLOW\MIXED\ETHANOL",
+        "FEED_ACETIC": "\Data\Streams\FEED\Input\FLOW\MIXED\ACETIC",
+        "FEED_H2O": "\Data\Streams\FEED\Input\FLOW\MIXED\H2O",
 
-        'PRODUCT_ETHYL-01': '\Data\Streams\PRODUCT\Output\MOLEFLOW\MIXED\ETHYL-01',
+        "PRODUCT_ETHYL-01": "\Data\Streams\PRODUCT\Output\MOLEFLOW\MIXED\ETHYL-01",
     }
 
     x_range = {
-        'FEED_pressure': [0.0500, 0.1500],
-        'FEED_ETHANOL': [150.0, 240.0],
-        'FEED_ACETIC': [150.0, 240.0],
-        'FEED_H2O': [650.0, 800.0],
+        "FEED_pressure": [0.0500, 0.1500],
+        "FEED_ETHANOL": [150.0, 240.0],
+        "FEED_ACETIC": [150.0, 240.0],
+        "FEED_H2O": [650.0, 800.0],
 
-        'PRODUCT_ETHYL-01': None,
+        "PRODUCT_ETHYL-01": None,
     }
     
     # ---- ASPEN 模拟 ------------------------------------------------------------------------------
@@ -133,7 +133,7 @@ if __name__ == '__main__':
 
 
     # 指定ASPEN文件名和所处目录.
-    file_name = 'cstr.bkp'
+    file_name = "cstr.bkp"
     file_dir = os.getcwd()
 
     # 进行ASPEN模拟.
@@ -143,9 +143,9 @@ if __name__ == '__main__':
     pyaspen.load_ap_file(file_name, file_dir)
 
     x_records, y_records, status_records = [], [], []
-    repeats = 5000
+    repeats = 100
     for i in range(repeats):
-        print('simulating %d' % i)
+        print("simulating %d" % i)
 
         # 随机给定一个参数值.
         x_values = random_x_values()
@@ -168,9 +168,9 @@ if __name__ == '__main__':
     y_records = np.array(y_records)
     status_records = np.array(status_records)
     
-    np.save(os.path.join(BASE_DIR,'data/dataset/X.npy'), x_records)
-    np.save(os.path.join(BASE_DIR,'data/dataset/Y.npy'), y_records)
-    np.save(os.path.join(BASE_DIR,'data/dataset/status.npy'), status_records)
+    np.save(os.path.join(BASE_DIR,"data/dataset/X.npy"), x_records)
+    np.save(os.path.join(BASE_DIR,"data/dataset/Y.npy"), y_records)
+    np.save(os.path.join(BASE_DIR,"data/dataset/status.npy"), status_records)
     
 
     
